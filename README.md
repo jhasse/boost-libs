@@ -7,9 +7,24 @@ Version: 1.51.0
 * serialization
 * system
 * unit_test_framework
+* python
 
 ## Mac
 
 ```
 b2 toolset=clang cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++"
+```
+
+## Windows
+
+### MinGW
+
+```
+.\b2 toolset=gcc
+```
+
+Python only:
+
+```
+.\b2 toolset=gcc --with-python link=shared
 ```
