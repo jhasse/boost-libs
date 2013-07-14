@@ -1,6 +1,6 @@
 # Boost Libraries
 
-Version: 1.51.0
+Version: 1.54.0
 
 * filesystem
 * program_options
