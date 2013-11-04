@@ -1,6 +1,6 @@
 # Boost Libraries
 
-Version: 1.54.0
+Version: 1.55.0
 
 * filesystem
 * program_options
@@ -20,7 +20,7 @@ b2 toolset=clang cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++"
 ### MinGW
 
 ```
-.\b2 toolset=gcc
+.\b2 toolset=gcc --without-python
 ```
 
 Python only:
