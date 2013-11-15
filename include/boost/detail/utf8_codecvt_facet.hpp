@@ -7,7 +7,7 @@
 #define BOOST_UTF8_CODECVT_FACET_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -92,7 +92,7 @@ namespace std {
 }
 #endif
 
-#if defined(_CPPLIB_VER) && (_CPPLIB_VER < 540)
+#if !defined(__MSL_CPP__) && !defined(__LIBCOMO__)
     #define BOOST_CODECVT_DO_LENGTH_CONST const
 #else
     #define BOOST_CODECVT_DO_LENGTH_CONST

@@ -2,7 +2,7 @@
 #define BOOST_SERIALIZATION_LEVEL_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -29,6 +29,7 @@
 #include <boost/mpl/int.hpp>
 #include <boost/mpl/integral_c.hpp>
 #include <boost/mpl/integral_c_tag.hpp>
+#include <boost/mpl/aux_/nttp_decl.hpp>
 
 #include <boost/serialization/level_enum.hpp>
 
@@ -93,7 +94,7 @@ struct implementation_level :
 {
 };
 
-template<class T, int L>
+template<class T, BOOST_MPL_AUX_NTTP_DECL(int, L) >
 inline bool operator>=(implementation_level< T > t, enum level_type l)
 {
     return t.value >= (int)l;

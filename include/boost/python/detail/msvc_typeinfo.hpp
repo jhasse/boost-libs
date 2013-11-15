@@ -10,16 +10,12 @@
 #include <boost/type_traits/config.hpp>
 
 //
-// Fix for icc's broken typeid() implementation which doesn't strip
+// Fix for MSVC's broken typeid() implementation which doesn't strip
 // decoration. This fix doesn't handle cv-qualified array types. It
 // could probably be done, but I haven't figured it out yet.
 //
 
-// Note: This file is badly named. It initially was MSVC specific, but was
-// extended to cover intel too. Now the old version of MSVC is no longer
-// supported, but the intel version is still supported.
-
-# if defined(BOOST_INTEL_CXX_VERSION) && BOOST_INTEL_CXX_VERSION <= 700
+# if defined(BOOST_MSVC) && BOOST_MSVC <= 1300 || defined(BOOST_INTEL_CXX_VERSION) && BOOST_INTEL_CXX_VERSION <= 700
 
 namespace boost { namespace python { namespace detail { 
 
@@ -75,5 +71,5 @@ inline typeinfo assert_array_typeid_compiles()
 
 }}} // namespace boost::python::detail
 
-# endif // BOOST_INTEL_CXX_VERSION
+# endif // BOOST_MSVC
 #endif // MSVC_TYPEINFO_DWA200222_HPP

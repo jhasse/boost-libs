@@ -7,7 +7,7 @@
 
 #ifndef BOOST_IOSTREAMS_FILTER_TEST_HPP_INCLUDED
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -15,7 +15,8 @@
 #include <boost/detail/workaround.hpp>
 #include <algorithm>                      // min.
 #include <cstddef>                        // size_t.
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) || \
+    BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
     BOOST_WORKAROUND(__MWERKS__, <= 0x3003) \
     /**/
 # include <cstdlib>                       // rand.
@@ -24,7 +25,8 @@
 #include <iterator>
 #include <string>
 #include <vector>
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+#if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300) && \
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(__MWERKS__, <= 0x3003) \
     /**/
 # include <boost/random/linear_congruential.hpp>
@@ -50,7 +52,8 @@
 namespace std { 
     using ::memcpy; 
     using ::strlen; 
-    #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
+    #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) || \
+        BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
         BOOST_WORKAROUND(__MWERKS__, <= 0x3003) \
         /**/
         using ::rand; 
@@ -64,7 +67,8 @@ BOOST_IOSTREAMS_BOOL_TRAIT_DEF(is_string, std::basic_string, 3)
 
 const std::streamsize default_increment = 5;
 
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+#if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300) && \
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(__MWERKS__, <= 0x3003) \
     /**/
     std::streamsize rand(int inc)

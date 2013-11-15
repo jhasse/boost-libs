@@ -15,6 +15,9 @@ namespace boost {
 template <class Model, class More>
 struct requires_ : More
 {
+# if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+    typedef typename More::type type;
+# endif 
     BOOST_CONCEPT_ASSERT((Model));
 };
 
@@ -31,6 +34,9 @@ struct _requires_
 template <int check, class Result>
 struct Requires_ : ::boost::parameter::aux::unaryfunptr_arg_type<Result>
 {
+# if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+    typedef typename ::boost::parameter::aux::unaryfunptr_arg_type<Result>::type type;
+# endif 
 };
 
 # if BOOST_WORKAROUND(BOOST_INTEL_WIN, BOOST_TESTED_AT(1010))
@@ -39,7 +45,7 @@ struct Requires_ : ::boost::parameter::aux::unaryfunptr_arg_type<Result>
 #  define BOOST_CONCEPT_REQUIRES_(r,data,t) + (::boost::_requires_<void(*)t>::value)
 # endif
 
-#if defined(NDEBUG)
+#if defined(NDEBUG) || BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 
 # define BOOST_CONCEPT_REQUIRES(models, result)                                    \
     typename ::boost::parameter::aux::unaryfunptr_arg_type<void(*)result>::type

@@ -24,7 +24,6 @@
 #include <boost/move/core.hpp>
 #include <boost/move/utility.hpp>
 #include <boost/move/iterator.hpp>
-#include <boost/container/throw_exception.hpp>
 #include <boost/container/detail/mpl.hpp>
 #include <boost/container/detail/type_traits.hpp>
 #include <boost/container/allocator_traits.hpp>
@@ -116,21 +115,18 @@ SizeType
                     ,const SizeType capacity
                     ,const SizeType n)
 {
-   const SizeType remaining = max_size - capacity;
-   if ( remaining < n )
-      boost::container::throw_length_error("get_next_capacity, allocator's max_size reached");
-   const SizeType additional = max_value(n, capacity);
-   return ( remaining < additional ) ? max_size : ( capacity + additional );
-   #if 0 //Alternative for 50% grow
-      const SizeType m3 = max_size/3;
+//   if (n > max_size - capacity)
+//      throw std::length_error("get_next_capacity");
 
-      if (capacity < m3)
-         return capacity + max_value(3*(capacity+1)/5, n);
+   const SizeType m3 = max_size/3;
 
-      if (capacity < m3*2)
-         return capacity + max_value((capacity+1)/2, n);
-      return max_size;
-   #endif
+   if (capacity < m3)
+      return capacity + max_value(3*(capacity+1)/5, n);
+
+   if (capacity < m3*2)
+      return capacity + max_value((capacity+1)/2, n);
+
+   return max_size;
 }
 
 template <class T>

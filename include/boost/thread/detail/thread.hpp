@@ -4,7 +4,7 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 // (C) Copyright 2007-2010 Anthony Williams
-// (C) Copyright 2011-2012 Vicente J. Botet Escriba
+// (C) Copyright 20011-2012 Vicente J. Botet Escriba
 
 #include <boost/thread/detail/config.hpp>
 
@@ -334,7 +334,7 @@ namespace boost
             start_thread(attrs);
         }
 #endif
-        thread(BOOST_THREAD_RV_REF(thread) x) BOOST_NOEXCEPT
+        thread(BOOST_THREAD_RV_REF(thread) x)
         {
             thread_info=BOOST_THREAD_RV(x).thread_info;
             BOOST_THREAD_RV(x).thread_info.reset();
@@ -546,7 +546,6 @@ namespace boost
         void detach();
 
         static unsigned hardware_concurrency() BOOST_NOEXCEPT;
-        static unsigned physical_concurrency() BOOST_NOEXCEPT;
 
 #define BOOST_THREAD_DEFINES_THREAD_NATIVE_HANDLE
         typedef detail::thread_data_base::native_handle_type native_handle_type;
@@ -750,10 +749,10 @@ namespace boost
 #endif
     void thread::join() {
         if (this_thread::get_id() == get_id())
-          boost::throw_exception(thread_resource_error(static_cast<int>(system::errc::resource_deadlock_would_occur), "boost thread: trying joining itself"));
+          boost::throw_exception(thread_resource_error(system::errc::resource_deadlock_would_occur, "boost thread: trying joining itself"));
 
         BOOST_THREAD_VERIFY_PRECONDITION( join_noexcept(),
-            thread_resource_error(static_cast<int>(system::errc::invalid_argument), "boost thread: thread not joinable")
+            thread_resource_error(system::errc::invalid_argument, "boost thread: thread not joinable")
         );
     }
 
@@ -764,7 +763,7 @@ namespace boost
 #endif
     {
         if (this_thread::get_id() == get_id())
-          boost::throw_exception(thread_resource_error(static_cast<int>(system::errc::resource_deadlock_would_occur), "boost thread: trying joining itself"));
+          boost::throw_exception(thread_resource_error(system::errc::resource_deadlock_would_occur, "boost thread: trying joining itself"));
         bool res;
         if (do_try_join_until_noexcept(timeout, res))
         {
@@ -773,7 +772,7 @@ namespace boost
         else
         {
           BOOST_THREAD_THROW_ELSE_RETURN(
-            (thread_resource_error(static_cast<int>(system::errc::invalid_argument), "boost thread: thread not joinable")),
+            (thread_resource_error(system::errc::invalid_argument, "boost thread: thread not joinable")),
             false
           );
         }

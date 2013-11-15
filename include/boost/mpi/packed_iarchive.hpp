@@ -127,12 +127,6 @@ public:
     t = boost::archive::class_id_type(x);
   }
 
-  void load_override(archive::version_type & t, int version){
-    int_least8_t x=0;
-    * this->This() >> x;
-    t = boost::archive::version_type(x);
-  }
-
   void load_override(archive::class_id_reference_type & t, int version){
     load_override(static_cast<archive::class_id_type &>(t), version);
   }
@@ -155,6 +149,7 @@ private:
 
 } } // end namespace boost::mpi
 
+BOOST_BROKEN_COMPILER_TYPE_TRAITS_SPECIALIZATION(boost::mpi::packed_iarchive)
 BOOST_SERIALIZATION_REGISTER_ARCHIVE(boost::mpi::packed_iarchive)
 BOOST_SERIALIZATION_USE_ARRAY_OPTIMIZATION(boost::mpi::packed_iarchive)
 

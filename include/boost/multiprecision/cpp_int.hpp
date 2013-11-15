@@ -255,7 +255,11 @@ public:
          // Allocate a new buffer and copy everything over:
          cap = (std::min)((std::max)(cap * 4, new_size), max_limbs);
          limb_pointer pl = allocator().allocate(cap);
-         std::memcpy(pl, limbs(), size() * sizeof(limbs()[0]));
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+         std::copy(limbs(), limbs() + size(), stdext::checked_array_iterator<limb_pointer>(pl, cap));
+#else
+         std::copy(limbs(), limbs() + size(), pl);
+#endif
          if(!m_internal)
             allocator().deallocate(limbs(), capacity());
          else
@@ -278,16 +282,24 @@ public:
    BOOST_MP_FORCEINLINE cpp_int_base(const cpp_int_base& o) : allocator_type(o), m_limbs(0), m_internal(true)
    {
       resize(o.size(), o.size());
-      std::memcpy(limbs(), o.limbs(), o.size() * sizeof(limbs()[0]));
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+      std::copy(o.limbs(), o.limbs() + o.size(), stdext::checked_array_iterator<limb_pointer>(limbs(), size()));
+#else
+      std::copy(o.limbs(), o.limbs() + o.size(), limbs());
+#endif
       m_sign = o.m_sign;
    }
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
    cpp_int_base(cpp_int_base&& o)
-      : allocator_type(static_cast<allocator_type&&>(o)), m_limbs(o.m_limbs), m_sign(o.m_sign), m_internal(o.m_internal)
+      : allocator_type(static_cast<Allocator&&>(o)), m_limbs(o.m_limbs), m_sign(o.m_sign), m_internal(o.m_internal)
    {
       if(m_internal)
       {
-         std::memcpy(limbs(), o.limbs(), o.size() * sizeof(limbs()[0]));
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+         std::copy(o.limbs(), o.limbs() + o.size(), stdext::checked_array_iterator<limb_pointer>(limbs(), size()));
+#else
+         std::copy(o.limbs(), o.limbs() + o.size(), limbs());
+#endif
       }
       else
       {
@@ -300,13 +312,17 @@ public:
    {
       if(!m_internal)
          allocator().deallocate(m_data.ld.data, m_data.ld.capacity);
-      *static_cast<allocator_type*>(this) = static_cast<allocator_type&&>(o);
+      *static_cast<Allocator*>(this) = static_cast<Allocator&&>(o);
       m_limbs = o.m_limbs;
       m_sign = o.m_sign;
       m_internal = o.m_internal;
       if(m_internal)
       {
-         std::memcpy(limbs(), o.limbs(), o.size() * sizeof(limbs()[0]));
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+         std::copy(o.limbs(), o.limbs() + o.size(), stdext::checked_array_iterator<limb_pointer>(limbs(), size()));
+#else
+         std::copy(o.limbs(), o.limbs() + o.size(), limbs());
+#endif
       }
       else
       {
@@ -329,7 +345,11 @@ public:
          static_cast<allocator_type&>(*this) = static_cast<const allocator_type&>(o);
          m_limbs = 0;
          resize(o.size(), o.size());
-         std::memcpy(limbs(), o.limbs(), o.size() * sizeof(limbs()[0]));
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+         std::copy(o.limbs(), o.limbs() + o.size(), stdext::checked_array_iterator<limb_pointer>(limbs(), size()));
+#else
+         std::copy(o.limbs(), o.limbs() + o.size(), limbs());
+#endif
          m_sign = o.m_sign;
       }
    }
@@ -486,8 +506,12 @@ public:
    {
       if(this != &o)
       {
-         m_limbs = o.m_limbs;
-         std::memcpy(limbs(), o.limbs(), o.size() * sizeof(o.limbs()[0]));
+         resize(o.size(), o.size());
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+         std::copy(o.limbs(), o.limbs() + o.size(), stdext::checked_array_iterator<limb_pointer>(limbs(), size()));
+#else
+         std::copy(o.limbs(), o.limbs() + o.size(), limbs());
+#endif
          m_sign = o.m_sign;
       }
    }
@@ -619,8 +643,12 @@ public:
    {
       if(this != &o)
       {
-         m_limbs = o.m_limbs;
-         std::memcpy(limbs(), o.limbs(), o.size() * sizeof(limbs()[0]));
+         resize(o.size(), o.size());
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+         std::copy(o.limbs(), o.limbs() + o.size(), stdext::checked_array_iterator<limb_pointer>(limbs(), size()));
+#else
+         std::copy(o.limbs(), o.limbs() + o.size(), limbs());
+#endif
       }
    }
 private:
@@ -1072,7 +1100,11 @@ private:
    {
       // regular non-trivial to non-trivial assign:
       this->resize(other.size(), other.size());
-      std::memcpy(this->limbs(), other.limbs(), (std::min)(other.size(), this->size()) * sizeof(this->limbs()[0]));
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1600)
+      std::copy(other.limbs(), other.limbs() + (std::min)(other.size(), this->size()), stdext::checked_array_iterator<limb_pointer>(this->limbs(), this->size()));
+#else
+      std::copy(other.limbs(), other.limbs() + (std::min)(other.size(), this->size()), this->limbs());
+#endif
       this->sign(other.sign());
       this->normalize();
    }

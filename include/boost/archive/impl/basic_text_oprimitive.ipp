@@ -9,7 +9,6 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <cstddef> // NULL
-#include <algorithm> // std::copy
 #include <boost/serialization/pfto.hpp>
 
 #include <boost/archive/basic_text_oprimitive.hpp>

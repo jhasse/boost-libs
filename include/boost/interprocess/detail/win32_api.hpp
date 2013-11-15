@@ -25,13 +25,12 @@
 #include <memory>
 
 
-#if defined(_MSC_VER)
+#if defined (_MSC_VER) && (_MSC_VER >= 1200)
 #  pragma once
 #  pragma comment( lib, "Advapi32.lib" )
 #  pragma comment( lib, "oleaut32.lib" )
 #  pragma comment( lib, "Ole32.lib" )
 #  pragma comment( lib, "Psapi.lib" )
-#  pragma comment( lib, "Shell32.lib" )   //SHGetSpecialFolderPathA
 #endif
 
 #if (defined BOOST_INTERPROCESS_WINDOWS)
@@ -171,7 +170,6 @@ static const unsigned long error_lock_violation       = 33;
 static const unsigned long security_descriptor_revision = 1;
 
 const unsigned long max_record_buffer_size = 0x10000L;   // 64K
-const unsigned long max_path = 260;
 
 //Own defines
 static const long SystemTimeOfDayInfoLength  = 48;
@@ -981,9 +979,6 @@ extern "C" __declspec(dllimport) void __stdcall CoUninitialize(void);
 //OleAut32.dll
 extern "C" __declspec(dllimport) long __stdcall VariantClear(wchar_variant * pvarg);
 
-//Shell32.dll
-extern "C" __declspec(dllimport) int __stdcall SHGetSpecialFolderPathA
-   (void* hwnd, const char *pszPath, int csidl, int fCreate);
 
 //EventLog access functions
 
@@ -1766,7 +1761,6 @@ struct reg_closer
 
 inline void get_shared_documents_folder(std::string &s)
 {
-   #if 0 //Original registry search code
    s.clear();
    void *key;
    if (reg_open_key_ex( hkey_local_machine
@@ -1792,14 +1786,6 @@ inline void get_shared_documents_folder(std::string &s)
          (void)err;
       }
    }
-   #else //registry alternative: SHGetSpecialFolderPathA
-   const int IG_CSIDL_COMMON_APPDATA = 0x0023; // All Users\Application Data
-   s.clear();
-   char szPath[max_path];
-   if(SHGetSpecialFolderPathA(0, szPath, IG_CSIDL_COMMON_APPDATA, 1)) {
-      s = szPath;
-   }
-   #endif
 }
 
 inline void get_registry_value(const char *folder, const char *value_key, std::vector<unsigned char> &s)

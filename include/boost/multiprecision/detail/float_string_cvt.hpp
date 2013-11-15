@@ -16,8 +16,7 @@
 
 namespace boost{ namespace multiprecision{ namespace detail{
 
-template <class I>
-inline void round_string_up_at(std::string& s, int pos, I& expon)
+inline void round_string_up_at(std::string& s, int pos, int& expon)
 {
    //
    // Rounds up a string representation of a number at pos:

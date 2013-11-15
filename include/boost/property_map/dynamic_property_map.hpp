@@ -299,6 +299,7 @@ put(const std::string& name, dynamic_properties& dp, const Key& key,
   }
 }
 
+#ifndef BOOST_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS 
 template<typename Value, typename Key>
 Value
 get(const std::string& name, const dynamic_properties& dp, const Key& key)
@@ -311,6 +312,7 @@ get(const std::string& name, const dynamic_properties& dp, const Key& key)
 
   BOOST_THROW_EXCEPTION(dynamic_get_failure(name));
 }
+#endif
 
 template<typename Value, typename Key>
 Value

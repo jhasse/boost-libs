@@ -18,9 +18,7 @@
 namespace boost {
 namespace detail {
 namespace winapi {
-
 #if defined( BOOST_USE_WINDOWS_H )
-
     typedef FILETIME FILETIME_;
     typedef PFILETIME PFILETIME_;
     typedef LPFILETIME LPFILETIME_;
@@ -35,12 +33,8 @@ namespace winapi {
     using ::GetSystemTime;
     using ::SystemTimeToFileTime;
     using ::GetTickCount;
-    #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
-    using ::GetTickCount64;
-    #endif
 
 #else
-
 extern "C" {
     typedef struct _FILETIME {
         DWORD_ dwLowDateTime;
@@ -72,12 +66,7 @@ extern "C" {
                 FILETIME_* lpFileTime);
     __declspec(dllimport) DWORD_ WINAPI
         GetTickCount();
-    #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
-    __declspec(dllimport) ULONGLONG_ WINAPI
-        GetTickCount64();
-    #endif
 }
-
 #endif
 
 #ifndef BOOST_HAS_GETSYSTEMTIMEASFILETIME

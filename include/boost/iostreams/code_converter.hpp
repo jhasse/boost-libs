@@ -10,7 +10,7 @@
 #ifndef BOOST_IOSTREAMS_CODE_CONVERTER_HPP_INCLUDED
 #define BOOST_IOSTREAMS_CODE_CONVERTER_HPP_INCLUDED
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -264,6 +264,14 @@ public:
     ));
 public:
     code_converter() { }
+#if BOOST_WORKAROUND(__GNUC__, < 3)
+    code_converter(code_converter& rhs) 
+        : code_converter_base<Device, Codecvt, Alloc>(rhs)
+        { }
+    code_converter(const code_converter& rhs) 
+        : code_converter_base<Device, Codecvt, Alloc>(rhs)
+        { }
+#endif
     BOOST_IOSTREAMS_FORWARD( code_converter, open_impl, Device,
                              BOOST_IOSTREAMS_CONVERTER_PARAMS, 
                              BOOST_IOSTREAMS_CONVERTER_ARGS )

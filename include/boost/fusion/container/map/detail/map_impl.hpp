@@ -82,14 +82,14 @@ namespace boost { namespace fusion { namespace detail
           : rest_type(rhs.get_base()), element(rhs.element)
         {}
 
-        map_impl(typename detail::call_param<Pair>::type element_
+        map_impl(typename detail::call_param<Pair>::type element
           , typename detail::call_param<T>::type... rest)
-          : rest_type(rest...), element(element_)
+          : rest_type(rest...), element(element)
         {}
 
-        map_impl(Pair&& element_, T&&... rest)
+        map_impl(Pair&& element, T&&... rest)
           : rest_type(std::forward<T>(rest)...)
-          , element(std::forward<Pair>(element_))
+          , element(std::forward<Pair>(element))
         {}
 
         template <typename Iterator>
@@ -113,8 +113,8 @@ namespace boost { namespace fusion { namespace detail
         value_type get_val(mpl::identity<key_type>) const;
         pair_type get_val(mpl::int_<index>) const;
 
-        mpl::identity<key_type> get_key(mpl::int_<index>);
-        mpl::identity<key_type> get_key(mpl::int_<index>) const;
+        key_type get_key(mpl::int_<index>);
+        key_type get_key(mpl::int_<index>) const;
 
         typename cref_result<value_type>::type
         get(mpl::identity<key_type>) const

@@ -12,7 +12,7 @@
 #ifndef BOOST_IOSTREAMS_GZIP_HPP_INCLUDED
 #define BOOST_IOSTREAMS_GZIP_HPP_INCLUDED
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -292,7 +292,13 @@ private:
 
     void close_impl()
     {
-        footer_.clear();
+        #if BOOST_WORKAROUND(__GNUC__, == 2) && defined(__STL_CONFIG_H) || \
+            BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1) \
+            /**/
+            footer_.erase(0, std::string::npos);
+        #else
+            footer_.clear();
+        #endif
         offset_ = 0;
         flags_ = 0;
     }

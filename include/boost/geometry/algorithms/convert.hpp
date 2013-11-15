@@ -388,24 +388,19 @@ struct convert<Polygon, Ring, polygon_tag, ring_tag, DimensionCount, false>
     }
 };
 
-} // namespace dispatch
-#endif // DOXYGEN_NO_DISPATCH
-
-
-namespace resolve_variant {
 
 template <typename Geometry1, typename Geometry2>
-struct convert
+struct devarianted_convert
 {
     static inline void apply(Geometry1 const& geometry1, Geometry2& geometry2)
     {
         concept::check_concepts_and_equal_dimensions<Geometry1 const, Geometry2>();
-        dispatch::convert<Geometry1, Geometry2>::apply(geometry1, geometry2);
+        convert<Geometry1, Geometry2>::apply(geometry1, geometry2);
     }
 };
 
 template <BOOST_VARIANT_ENUM_PARAMS(typename T), typename Geometry2>
-struct convert<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
+struct devarianted_convert<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
 {
     struct visitor: static_visitor<void>
     {
@@ -418,7 +413,7 @@ struct convert<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
         template <typename Geometry1>
         inline void operator()(Geometry1 const& geometry1) const
         {
-            convert<Geometry1, Geometry2>::apply(geometry1, m_geometry2);
+            devarianted_convert<Geometry1, Geometry2>::apply(geometry1, m_geometry2);
         }
     };
 
@@ -431,7 +426,9 @@ struct convert<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
     }
 };
 
-}
+
+} // namespace dispatch
+#endif // DOXYGEN_NO_DISPATCH
 
 
 /*!
@@ -452,7 +449,7 @@ points or closing or opening the polygon rings.
 template <typename Geometry1, typename Geometry2>
 inline void convert(Geometry1 const& geometry1, Geometry2& geometry2)
 {
-    resolve_variant::convert<Geometry1, Geometry2>::apply(geometry1, geometry2);
+    dispatch::devarianted_convert<Geometry1, Geometry2>::apply(geometry1, geometry2);
 }
 
 #if defined(_MSC_VER)

@@ -737,8 +737,6 @@ namespace boost
     namespace detail
     {
 
-//#if BOOST_CHRONO_INTERNAL_TIMEGM
-
     inline int32_t is_leap(int32_t year)
     {
       if(year % 400 == 0)
@@ -795,7 +793,6 @@ namespace boost
 
       return result;
     }
-//#endif
 
     /**
     * from_ymd could be made more efficient by using a table

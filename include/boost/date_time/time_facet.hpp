@@ -7,7 +7,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author:  Martin Andrian, Jeff Garland, Bart Garst
- * $Date: 2013-10-10 17:43:31 +0200 (Do, 10. Okt 2013) $
+ * $Date: 2013-10-15 08:22:02 -0700 (Tue, 15 Oct 2013) $
  */
 
 #include <cctype>
@@ -580,7 +580,13 @@ namespace date_time {
       ss.imbue(std::locale::classic()); // don't want any formatting
       ss << std::setw(width)
         << std::setfill(static_cast<char_type>('0'));
+#if (defined(BOOST_MSVC) && (_MSC_VER < 1300))
+      // JDG [7/6/02 VC++ compatibility]
+      char_type buff[34];
+      ss << _i64toa(static_cast<boost::int64_t>(val), buff, 10);
+#else
       ss << val;
+#endif
       return ss.str();
     }
 

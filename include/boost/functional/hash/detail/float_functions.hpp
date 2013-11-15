@@ -9,7 +9,7 @@
 #include <boost/config.hpp>
 #include <boost/config/no_tr1/cmath.hpp>
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 

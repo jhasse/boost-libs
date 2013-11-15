@@ -17,7 +17,7 @@
 #ifndef BOOST_INTRUSIVE_ALLOCATOR_MEMORY_UTIL_HPP
 #define BOOST_INTRUSIVE_ALLOCATOR_MEMORY_UTIL_HPP
 
-#if defined(_MSC_VER)
+#if (defined _MSC_VER) && (_MSC_VER >= 1200)
 #  pragma once
 #endif
 

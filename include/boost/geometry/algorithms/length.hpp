@@ -148,14 +148,9 @@ struct length<Geometry, segment_tag>
     : detail::length::segment_length<Geometry>
 {};
 
-} // namespace dispatch
-#endif // DOXYGEN_NO_DISPATCH
-
-
-namespace resolve_variant {
 
 template <typename Geometry>
-struct length
+struct devarianted_length
 {
     typedef typename default_length_result<Geometry>::type result_type;
 
@@ -163,12 +158,12 @@ struct length
     static inline result_type apply(Geometry const& geometry,
                                     Strategy const& strategy)
     {
-        return dispatch::length<Geometry>::apply(geometry, strategy);
+        return length<Geometry>::apply(geometry, strategy);
     }
 };
 
 template <BOOST_VARIANT_ENUM_PARAMS(typename T)>
-struct length<variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
+struct devarianted_length<variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
 {
     typedef typename mpl::fold<
                 typename mpl::transform<
@@ -199,10 +194,10 @@ struct length<variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
         {}
 
         template <typename Geometry>
-        inline typename length<Geometry>::result_type
+        inline typename devarianted_length<Geometry>::result_type
         operator()(Geometry const& geometry) const
         {
-            return length<Geometry>::apply(geometry, m_strategy);
+            return devarianted_length<Geometry>::apply(geometry, m_strategy);
         }
     };
 
@@ -216,7 +211,9 @@ struct length<variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
     }
 };
 
-} // namespace resolve_variant
+
+} // namespace dispatch
+#endif // DOXYGEN_NO_DISPATCH
 
 
 /*!
@@ -231,20 +228,19 @@ struct length<variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
 \qbk{[length] [length_output]}
  */
 template<typename Geometry>
-inline typename resolve_variant::length<Geometry>::result_type
+inline typename dispatch::devarianted_length<Geometry>::result_type
 length(Geometry const& geometry)
 {
     concept::check<Geometry const>();
 
     // detail::throw_on_empty_input(geometry);
 
-    // TODO put this into a resolve_strategy stage
     typedef typename strategy::distance::services::default_strategy
         <
             point_tag, typename point_type<Geometry>::type
         >::type strategy_type;
 
-    return resolve_variant::length<Geometry>::apply(geometry, strategy_type());
+    return dispatch::devarianted_length<Geometry>::apply(geometry, strategy_type());
 }
 
 
@@ -263,14 +259,14 @@ length(Geometry const& geometry)
 \qbk{[length_with_strategy] [length_with_strategy_output]}
  */
 template<typename Geometry, typename Strategy>
-inline typename resolve_variant::length<Geometry>::result_type
+inline typename dispatch::devarianted_length<Geometry>::result_type
 length(Geometry const& geometry, Strategy const& strategy)
 {
     concept::check<Geometry const>();
 
     // detail::throw_on_empty_input(geometry);
     
-    return resolve_variant::length<Geometry>::apply(geometry, strategy);
+    return dispatch::devarianted_length<Geometry>::apply(geometry, strategy);
 }
 
 

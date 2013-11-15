@@ -31,9 +31,7 @@ namespace boost
   struct no_block_tag{};
   BOOST_CONSTEXPR_OR_CONST no_block_tag no_block = {};
 
-  struct sync_queue_is_closed : std::exception
-  {
-  };
+  struct sync_queue_is_closed : std::exception {};
 
   template <typename ValueType>
   class sync_bounded_queue
@@ -156,13 +154,6 @@ namespace boost
       elem = boost::move(data_[out_]);
       out_ = inc(out_);
       notify_not_full_if_needed(lk);
-    }
-    inline value_type pull(unique_lock<mutex>& lk)
-    {
-      value_type elem = boost::move(data_[out_]);
-      out_ = inc(out_);
-      notify_not_full_if_needed(lk);
-      return boost::move(elem);
     }
     inline boost::shared_ptr<value_type> ptr_pull(unique_lock<mutex>& lk)
     {
@@ -417,9 +408,9 @@ namespace boost
   {
     try
     {
-      unique_lock<mutex> lk(mtx_);
-      wait_until_not_empty(lk);
-      return pull(lk);
+      value_type elem;
+      pull(elem);
+      return boost::move(elem);
     }
     catch (...)
     {
@@ -538,7 +529,7 @@ namespace boost
     try
     {
       unique_lock<mutex> lk(mtx_);
-      return try_push(boost::move(elem), lk);
+      return try_push(elem, lk);
     }
     catch (...)
     {
@@ -557,7 +548,7 @@ namespace boost
       {
         return false;
       }
-      return try_push(boost::move(elem), lk);
+      return try_push(elem, lk);
     }
     catch (...)
     {
@@ -572,7 +563,7 @@ namespace boost
     try
     {
       unique_lock<mutex> lk(mtx_);
-      push_at(boost::move(elem), wait_until_not_full(lk), lk);
+      push_at(elem, wait_until_not_full(lk), lk);
     }
     catch (...)
     {
@@ -584,7 +575,7 @@ namespace boost
   template <typename ValueType>
   sync_bounded_queue<ValueType>& operator<<(sync_bounded_queue<ValueType>& sbq, BOOST_THREAD_RV_REF(ValueType) elem)
   {
-    sbq.push(boost::move(elem));
+    sbq.push(boost::forward<ValueType>(elem));
     return sbq;
   }
 
