@@ -20,11 +20,11 @@ b2 toolset=clang cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++"
 ### MinGW
 
 ```
-.\b2 toolset=gcc --without-python
+.\b2 toolset=gcc -j3 --without-python
 ```
 
 Python only:
 
 ```
-.\b2 toolset=gcc --with-python link=shared
+.\b2 toolset=gcc -j3 --with-python link=shared
 ```
